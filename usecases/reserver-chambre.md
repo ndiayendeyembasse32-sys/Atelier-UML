@@ -66,7 +66,7 @@ Le système vérifie la transaction auprès du service de paiement avant toute n
 - **Échec avant enregistrement :** aucune réservation n’est créée.
 - **Dans tous les cas :** aucune double réservation d’une chambre pour une même nuit n’est autorisée.
 
-## Hypothèses à valider
+## Hypothèses retenues pour l’exercice
 
 - Une réservation en attente bloque la chambre jusqu’à confirmation ou annulation.
 - Les réservations faites à 8 jours ou moins sont confirmées après les contrôles, sans arrhes obligatoires.
