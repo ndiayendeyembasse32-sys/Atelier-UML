@@ -1,93 +1,95 @@
-Fiche de cas d'utilisation : Facturer le départ
+# Facturer le départ
 
-Objectif
+## Objectif
 
-Établir la facture du séjour : hébergement selon le nombre d'occupants, prestations consommées et taxe de séjour, avec indication des sommes déjà versées et du solde.
+Établir la facture du séjour et déterminer le solde à payer en tenant compte de l’hébergement, des consommations, de la taxe de séjour et des versements déjà reçus.
 
-Acteurs
+## Acteurs
 
-Acteur principal : Réceptionniste.
+- **Acteur principal :** réceptionniste.
+- **Acteur secondaire :** service de paiement externe, si un encaissement est nécessaire.
+- **Bénéficiaire :** client.
+- **Déclencheur :** le client se présente pour son départ.
 
-Bénéficiaire : Client.
+## Préconditions
 
-Déclencheur : le client se présente pour son départ.
+- L’arrivée du client a été enregistrée.
+- Le séjour, la chambre et le nombre d’occupants sont connus.
+- Les tarifs et les règles de taxe sont accessibles.
+- Les consommations et les versements déjà reçus sont consultables.
+- Le relevé téléphonique d’arrivée est enregistré.
 
-Le service de paiement intervient dans le cas associé « Solder le séjour », après la facturation ; il n'est pas nécessaire au seul calcul et à l'émission de la facture.
+## Scénario nominal
 
-Préconditions
+1. Le réceptionniste recherche le séjour du client.
+2. Le système affiche les dates, la chambre, les occupants, les consommations et les versements déjà reçus.
+3. Le réceptionniste vérifie les informations, ajoute les dernières consommations et saisit le relevé téléphonique final.
+4. Le système calcule le prix de l’hébergement selon les nuits et le nombre d’occupants, puis ajoute les prestations et la taxe de séjour.
+5. Le système présente le total, déduit les arrhes et autres paiements déjà reçus, puis affiche le solde.
+6. Le réceptionniste vérifie le détail et valide l’émission de la facture.
+7. Le système enregistre la facture avec une référence et la rend disponible pour remise au client.
 
-L'arrivée du client a été enregistrée et le séjour est identifiable.
+## Extension — Encaisser un paiement
 
-La chambre, les dates, les occupants, les tarifs et les règles de taxe applicables sont accessibles.
+**Condition :** le solde à payer est positif.
 
-Les consommations enregistrées et les paiements déjà reçus sont consultables.
+Après l’étape 7 :
 
-Le relevé téléphonique d'arrivée a été conservé.
+1. Le réceptionniste déclenche le règlement du solde.
+2. Le système transmet la demande au service de paiement externe.
+3. Le service de paiement confirme le succès.
+4. Le système enregistre la transaction et marque la facture comme acquittée.
 
-Scénario nominal
+## Alternatives et exceptions
 
-Le réceptionniste recherche le séjour du client et demande sa facturation.
+### 1a — Séjour introuvable
 
-Le système affiche les dates, la chambre, le nombre d'occupants, les consommations et les paiements déjà enregistrés.
+Le réceptionniste vérifie la référence et relance la recherche. Aucune facture n’est émise.
 
-Le réceptionniste vérifie les informations, complète les dernières consommations et saisit le relevé téléphonique final.
+### 3a — Consommation oubliée ou erronée
 
-Le système calcule le montant de l'hébergement selon les nuits et le nombre d'occupants, ajoute les prestations et la taxe de séjour. La consommation téléphonique est calculée à partir des relevés et du tarif applicable, sans double comptage.
+Le réceptionniste corrige les données avant le calcul. Le scénario reprend à l’étape 4.
 
-Le système présente le détail, le total du séjour, les arrhes et autres paiements déjà encaissés, puis le solde restant à payer.
+### 3b — Relevé téléphonique incohérent
 
-Le réceptionniste vérifie le récapitulatif et valide l'émission.
+Le système signale l’anomalie. Le réceptionniste vérifie et corrige les relevés avant de poursuivre.
 
-Le système attribue une référence à la facture, l'enregistre et la rend disponible pour remise au client. La facture indique le solde et son état de règlement.
+### 4a — Tarif ou règle de taxe manquant
 
-Alternatives et exceptions
+Le système suspend le calcul jusqu’à correction des paramètres par une personne autorisée.
 
-1a - Séjour introuvable ou arrivée non enregistrée
+### 5a — Solde nul
 
-Le système signale le problème. Le réceptionniste vérifie la référence ou régularise le dossier avant de reprendre à l'étape 1. Aucune facture n'est émise.
+Aucun paiement supplémentaire n’est demandé. La facture est enregistrée comme acquittée après validation.
 
-3a - Consommation oubliée ou erronée
+### 5b — Solde négatif
 
-Le réceptionniste ajoute ou corrige la consommation avant validation. Le système conserve la traçabilité de la correction et reprend le calcul à l'étape 4.
+Le système signale un trop-perçu. Son traitement suit une règle à définir avec le gérant.
 
-3b - Relevé téléphonique final absent ou incohérent
+### 6a — Erreur détectée avant validation
 
-Le système signale l'anomalie. Le réceptionniste vérifie les relevés. La facture définitive n'est pas émise tant que ce montant n'est pas établi ; reprise à l'étape 3 après correction.
+Le réceptionniste corrige les données. Le système reprend le calcul à l’étape 4.
 
-4a - Tarif ou règle de taxe manquant
+### Extension, étape 3a — Paiement refusé
 
-Le système ne remplace pas le montant manquant par zéro. Le dossier est mis en attente de correction des paramètres par une personne autorisée, puis le calcul reprend à l'étape 4.
+La facture reste émise et non soldée. Le réceptionniste peut proposer une nouvelle tentative de paiement.
 
-5a - Solde nul
+### Extension, étape 3b — Résultat du paiement inconnu
 
-Le système indique que les sommes encaissées couvrent la facture. Après validation, la facture est enregistrée comme acquittée ; aucun paiement supplémentaire n'est demandé.
+Le système vérifie la transaction avant toute nouvelle tentative pour éviter un double encaissement.
 
-5b - Solde négatif
+## Postconditions
 
-Le système signale un trop-perçu. Son traitement est soumis à une règle à valider avec le gérant ; aucun remboursement automatique non prévu par l'énoncé n'est inventé.
+- Une facture détaillée et référencée est enregistrée après validation.
+- Les versements antérieurs sont pris en compte.
+- Le solde restant à payer est connu.
+- Si le règlement réussit ou si le solde est nul, la facture est acquittée.
+- Si le paiement échoue, la facture reste non soldée.
 
-6a - Le réceptionniste détecte une erreur
+## Règle de calcul
 
-Il revient aux données à corriger, puis le système recalcule à partir de l'étape 4. Aucune facture définitive n'est émise avant validation.
+**Total du séjour = hébergement + prestations + taxe de séjour**
 
-Postconditions
+**Solde = total du séjour − arrhes − autres paiements déjà reçus**
 
-Succès : une facture détaillée et référencée est enregistrée ; les versements antérieurs sont pris en compte et le solde est connu.
-
-Échec ou interruption : aucune facture définitive incorrecte n'est émise ; le séjour et les paiements précédents restent conservés.
-
-La facturation seule ne prouve pas le paiement. Une facture avec un solde positif reste à régler.
-
-Suite associée : Solder le séjour
-
-Le réceptionniste déclenche le règlement du solde positif.
-
-Le système demande l'encaissement au service de paiement externe.
-
-Si le paiement réussit, le système enregistre la transaction et marque la facture acquittée.
-
-Si le paiement échoue, la facture reste émise et non soldée ; le réceptionniste peut proposer une nouvelle tentative.
-
-Si le résultat est inconnu, le système vérifie la transaction avant de relancer un paiement, afin d'éviter un double encaissement.
-
-Cette séparation permet de réutiliser la fiche pour un diagramme de séquence de facturation, puis d'y associer la séquence de paiement.
+La consommation téléphonique est calculée à partir des relevés et du tarif applicable, sans compter deux fois les montants déjà enregistrés.
